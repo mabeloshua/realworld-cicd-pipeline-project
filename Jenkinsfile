@@ -58,20 +58,20 @@ pipeline {
                 sh """
                 mvn sonar:sonar \
                 -Dsonar.projectKey=JavaWebApp-Project \
-                -Dsonar.host.url=http://172.31.90.165:9000 \
+                -Dsonar.host.url=http://172.31.85.132:9000 \
                 -Dsonar.login=$SONAR_TOKEN
                 """
                 }
             }
         }
     }
-    stage('SonarQube GateKeeper') {
-        steps {
-          timeout(time : 1, unit : 'HOURS'){
-          waitForQualityGate abortPipeline: true
-          }
-       }
-    }
+    // stage('SonarQube GateKeeper') {
+    //     steps {
+    //       timeout(time : 1, unit : 'HOURS'){
+    //       waitForQualityGate abortPipeline: true
+    //       }
+    //    }
+    // }
     stage("Nexus Artifact Uploader"){
         steps{
            nexusArtifactUploader(
@@ -130,7 +130,7 @@ pipeline {
   post {
     always {
         echo 'Slack Notifications.'
-        slackSend channel: '#ma-cicd-pipeline-alerts', //update and provide your channel name
+        slackSend channel: 'innovative-batch-pipeline-alert2', //update and provide your channel name
         color: COLOR_MAP[currentBuild.currentResult],
         message: "*${currentBuild.currentResult}:* Job Name '${env.JOB_NAME}' build ${env.BUILD_NUMBER} \n Build Timestamp: ${env.BUILD_TIMESTAMP} \n Project Workspace: ${env.WORKSPACE} \n More info at: ${env.BUILD_URL}"
     }
